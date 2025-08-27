@@ -2,22 +2,24 @@ name: Website Monitor
 
 on:
   schedule:
-    - cron: '*/15 * * * *'   # alle 15 Minuten
+    - cron: '*/15 * * * *'
   workflow_dispatch:
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      # Repo auschecken
+      # Repository auschecken und Credentials für Push behalten
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          persist-credentials: true  # Sehr wichtig für Push
 
       # Website prüfen und HTML-Datei erstellen
       - name: Prüfe Website und erstelle HTML
         id: ping
         run: |
-          STATUS=$(curl -o /dev/null -s -w "%{http_code}" https://mattisweb.de)
+          STATUS=$(curl -o /dev/null -s -w "%{http_code}" https://deine-website.de)
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
           
           if [ "$STATUS" -eq 200 ]; then
@@ -49,5 +51,4 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add status.html
           git commit -m "Update Website Status" || echo "Keine Änderungen zum committen"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/INEVERSTOPMEWING/status.git HEAD:main
-
+          git push

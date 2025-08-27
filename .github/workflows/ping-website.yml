@@ -50,3 +50,4 @@ jobs:
           git add status.html
           git commit -m "Update Website Status" || echo "Keine Änderungen zum committen"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/INEVERSTOPMEWING/status.git HEAD:main
+
